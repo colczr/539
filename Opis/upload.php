@@ -17,7 +17,7 @@ if ($_POST['access'] == "public"){
   $access = 1;
 }
 else{
-  $target_dir = "img/uploads/private/";
+  $target_dir = "../private539/";
   $access = 0;
 }
 $fileName = $path_parts['filename'].'_'.time().'_'.$_SESSION['id'].".".$path_parts['extension'];

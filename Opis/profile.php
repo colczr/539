@@ -98,11 +98,37 @@ require_once("pdo.php");
       echo '<img src="'.$dirName.$row['fileName'].'"/>';
 
   }
+?>
+</div>
+<p>These are your private images, they won't show in the public gallery.</p>
+<div class="Collage">
+<?php
+  $stmt = $pdo->query("SELECT user_id, fileName FROM images WHERE access = 0 AND user_id = ".$_SESSION['id'] );
+  $i = 0;
+  while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+      $myfile = fopen("temp/image".$i."user".$_SESSION['id'].".php", "w");
+      $txt = "<?php \$file = '../../private539/"
+          .$row['fileName'].
+          "';
+          header('Content-Type: image/jpeg');
+          header('Content-Length: '.filesize(\$file));
+          readfile(\$file); ?>";
+
+      fwrite($myfile, $txt);
+      fclose($myfile);
+
+      echo "<img src= temp/image".$i."user".$_SESSION['id'].".php/>";
+      $i++;
+  }
+  $_SESSION['imageIndex'] = $i;
+  $i = 0;
 
 
 ?>
 
 </div>
+
+<a href="logout.php">Log out</a>
 <script type=text/javascript>
 $(".uploadClick").click(function(){
   $(".upload").fadeIn(500);
@@ -112,5 +138,6 @@ $(".uploadClick").click(function(){
 </script>
 </body>
 </html>
+
 
 <!-- USE ONLOAD TO MAKE SURE JAVASCRIPT WORKS AFTER WHOLE FILE IS LOADED -->
