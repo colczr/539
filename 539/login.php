@@ -29,7 +29,7 @@ if ( isset($_POST['email']) && isset($_POST['pass']) ) {
         $_SESSION['id'] = $row['user_id'];
         $_SESSION['email'] = $row['email'];
         //Redirect the browser to autos.php
-        header("Location: explore.php");
+        header("Location: profile.php");
         exit();
       } else{
         $_SESSION['error']="Incorrect Password";

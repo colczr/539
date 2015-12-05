@@ -3,11 +3,75 @@
   src: url(../font/champagne.ttf);
 }
 
+.delete{
+  position: absolute;
+  text-decoration: none;
+}
+
+.blocks > div {
+
+    display: inline-block;
+    margin: 2vh;
+
+}
+
+.blocks > div > a > div{
+  position: static;
+  background-size: cover;
+  background-position: center;
+
+}
+
+.delete > img {
+  width: 10vh;
+  margin-left: 5vh;
+  margin-top: 5vh;
+
+}
+/*
+.delete {
+  display: none;
+}*/
+
+.thumbnail{
+  width: 20vh;
+  height: 20vh;
+}
+
+@font-face{
+  font-family: champagneBold;
+  src: url(../font/champagneBold.ttf);
+}
+
 @font-face{
   font-family: channelLeft;
   src: url(../font/ChannelLeft.ttf);
 }
 
+@font-face{
+  font-family: hel;
+  src: url(../font/hel.ttf);
+}
+
+@font-face{
+  font-family: helMed;
+  src: url(../font/helMed.ttf);
+}
+
+@font-face{
+  font-family: helLight;
+  src: url(../font/helLight.ttf);
+}
+
+@font-face{
+  font-family: helUltraLight;
+  src: url(../font/helUltraLight.ttf);
+}
+
+@font-face{
+  font-family: helThin;
+  src: url(../font/helThin.otf);
+}
 
 body{
   font-family: champagne;
@@ -16,14 +80,14 @@ body{
 
 #login{
   background-color: white;
-  width: 50vh;
-  height: 30vh;
+  width: 40vh;
+  height: 25vh;
   border-radius: 0px;
   position: absolute;
   left: 0;
   right: 0;
   margin: auto;
-  top: 34vh;
+  top: 38vh;
   display: none;
 }
 
@@ -149,7 +213,27 @@ div.background{
   height: 100vh;
   border: solid white 50px;
   box-sizing: border-box;
-  -webkit-filter:  grayscale(80%) brightness(140%);
+
   opacity: .8;
   position: absolute;
+}
+
+#login > h2{
+  font-family: Champagne;
+  margin-top: 3vh;
+  margin-bottom: 2vh;
+}
+
+form.upload {
+  display: none;
+}
+
+.uploadClick:hover{
+  cursor: pointer;
+}
+
+.upload > input {
+  margin-top: .5vh;
+  margin-bottom: .5vh;
+
 }
