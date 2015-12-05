@@ -1,6 +1,14 @@
 <?php
 session_start();
 require_once("pdo.php");
+if ( !isset($_SESSION['id'])) {
+  header("Location: login.php");
+  exit();
+}
+
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -19,6 +27,8 @@ require_once("pdo.php");
   <script src="js/collage/jquery.collagePlus.js"></script>
   <script src="js/collage/extras/jquery.removeWhitespace.js"></script>
   <script src="js/collage/extras/jquery.collageCaption.js"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
   <script type="text/javascript">
 
   // All images need to be loaded for this plugin to work so
@@ -61,9 +71,6 @@ require_once("pdo.php");
 <body>
 
 
-<!-- WHY DOESNT IT WORK!? -->
-
-
 
   <?php
     if (isset($_SESSION['success'])){
@@ -75,15 +82,18 @@ require_once("pdo.php");
       unset($_SESSION['error']);
     }
    ?>
-   <p class="uploadClick">Upload a File</p>
-<form class="upload" action="upload.php" method="post" enctype="multipart/form-data">
-    Select image to upload:
-    <input type="file" name="fileToUpload" id="fileToUpload">
-    <input type="submit" value="Upload Image" name="submit"> </br>
-    <p>Select Access Privilege</p>
-    <input type="radio" name="access" value="public">Public
-    <input type="radio" name="access" value="private">Private
-</form>
+
+    <input type="text" class="search" name="findUser" placeholder="Find A User">
+
+   <a href=# class="uploadClick">Upload a File</a>
+  <form class="upload" action="upload.php" method="post" enctype="multipart/form-data">
+      Select image to upload:
+      <input type="file" name="fileToUpload" id="fileToUpload">
+      <input type="submit" value="Upload Image" name="submit"> </br>
+      <p>Select Access Privilege</p>
+      <input type="radio" name="access" value="public">Public
+      <input type="radio" name="access" value="private" CHECKED/>Private
+  </form>
 
 <div class="Collage">
 <?php
@@ -93,9 +103,10 @@ require_once("pdo.php");
   //   echo '<img src="'.$image.'"/> <br />';
   // }
 
-  $stmt = $pdo->query("SELECT user_id, fileName FROM images WHERE access = 1 AND user_id = ".$_SESSION['id'] );
+  $stmt = $pdo->query("SELECT img_id, user_id, fileName FROM images WHERE access = 1 AND user_id = ".$_SESSION['id'] );
   while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
-      echo '<img src="'.$dirName.$row['fileName'].'"/>';
+      echo '<div><a href= display.php?img_id='.$row['img_id'].'><img src="'.$dirName.$row['fileName'].'"/></a><img src="img/nav2.png"/></div>';
+
 
   }
 ?>
@@ -103,21 +114,33 @@ require_once("pdo.php");
 <p>These are your private images, they won't show in the public gallery.</p>
 <div class="Collage">
 <?php
-  $stmt = $pdo->query("SELECT user_id, fileName FROM images WHERE access = 0 AND user_id = ".$_SESSION['id'] );
+  $stmt = $pdo->query("SELECT img_id, user_id, fileName FROM images WHERE access = 0 AND user_id = ".$_SESSION['id'] );
   $i = 0;
   while ( $row = $stmt->fetch(PDO::FETCH_ASSOC) ) {
+      $userId = $row['user_id'];
       $myfile = fopen("temp/image".$i."user".$_SESSION['id'].".php", "w");
-      $txt = "<?php \$file = '../../private539/"
-          .$row['fileName'].
-          "';
-          header('Content-Type: image/jpeg');
-          header('Content-Length: '.filesize(\$file));
-          readfile(\$file); ?>";
+      $txt = "<?php
+      session_start();
+      if (!isset(\$_SESSION['id']) or \$_SESSION['id'] != ".$row['user_id']."){
+        die('You cannot view other user\'s private files.');
+      } else {
+        \$file = '../../private539/".$row['fileName']."';
+        header('Content-Type: image/jpeg');
+        header('Content-Length: '.filesize(\$file));
+        readfile(\$file);
+      }
+      ?>";
 
       fwrite($myfile, $txt);
       fclose($myfile);
-
-      echo "<img src= temp/image".$i."user".$_SESSION['id'].".php/>";
+      echo '<div>
+              <a class="pic" href= display.php?img_id='.$row['img_id'].'&temp_id='.$i.'>
+                <img src=" temp/image'.$i.'user'.$_SESSION['id'].'.php"/>
+              </a>
+              <a class="delete" href=#>
+                <img src="img/nav2.png" style="width: 20px; height: 20px;"/>
+              </a>
+            </div>';
       $i++;
   }
   $_SESSION['imageIndex'] = $i;
@@ -131,9 +154,17 @@ require_once("pdo.php");
 <a href="logout.php">Log out</a>
 <script type=text/javascript>
 $(".uploadClick").click(function(){
-  $(".upload").fadeIn(500);
-  console.log("aaa");
+  $(".upload").toggle(500);
 });
+// var availableTags = [
+//      "ActionScript",
+//      "AppleScript",
+//      "Scheme"
+//    ];
+$(".search").autocomplete({
+  source: 'complete.php'
+});
+
 
 </script>
 </body>

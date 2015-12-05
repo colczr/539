@@ -11,5 +11,6 @@ if (isset($_SESSION['imageIndex'])){
 
 unset($_SESSION['imageIndex']);
 header("Location: login.php");
+unset($_SESSION['id']);
 unset($_SESSION);
  ?>
